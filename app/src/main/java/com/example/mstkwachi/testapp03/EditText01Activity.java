@@ -1,13 +1,110 @@
 package com.example.mstkwachi.testapp03;
 
+import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class EditText01Activity extends AppCompatActivity {
+
+    private static final String SEED = "ABCDEF";
+
+    private String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_text01);
+
+        Intent intent = getIntent();
+        fileName = intent.getStringExtra(Constants.INTENT_KEY_FILENAME);
     }
+
+    public void ok(View view) {
+        Log.d("TestApp03", "EditText01Activity.Ok start.");
+
+        //Intent intent = new Intent(SecondActivity.this, MainActivity.class);
+        //startActivity(intent);
+        saveFile(fileName);
+
+    }
+
+    // copied code
+
+    public void cancel(View view) {
+        Log.d("TestApp01", "My2ndActivity.cancel start.");
+        String filePath = Environment.getExternalStorageDirectory() + "/memo.txt";
+        File file = new File(filePath);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+            BufferedReader br = new BufferedReader(isr);
+
+            char[] buff = new char[1024];
+            int retRead;
+            StringBuffer strBuff = new StringBuffer();
+
+            retRead = br.read(buff, 0, 1024);
+            while(0 <= retRead) {
+                strBuff.append(buff, 0, retRead);
+                retRead = br.read(buff, 0, 1024);
+            }
+            br.close();
+
+            String deStr = MyCrypto.decrypt(SEED, strBuff.toString());
+
+            EditText editText = (EditText) findViewById(R.id.edit_text01_txtEdit);
+            editText.setText(deStr);
+            //- ただの読み込みはできているので、復号化すること -> not yet
+            //- readLineではなく、もっと丁寧な処理にすることを次にやる -> done.
+        } catch (Exception e) {
+            //e.printStackTrace();
+            Log.e("TestApp01", "Error", e);
+        }
+
+    }
+
+
+    private void saveFile(String filename){
+        String filePath = Environment.getExternalStorageDirectory() + "/TestApp03/" + filename;
+        File file = new File(filePath);
+        file.getParentFile().mkdir();
+
+        FileOutputStream fos;
+        try {
+            //fos = new FileOutputStream(file, true);
+            fos = new FileOutputStream(file);
+            OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+            BufferedWriter bw = new BufferedWriter(osw);
+            //EditText txtEdit = (EditText) findViewById(R.id.my2nd_txtTextBody);
+            //txtEdit.setText(filePath);
+
+            String plainStr = ((EditText) findViewById(R.id.edit_text01_txtEdit)).getText().toString();
+
+            String encStr = MyCrypto.encrypt(SEED, plainStr);
+            bw.write(encStr);
+            bw.flush();
+            bw.close();
+        } catch (Exception e) {
+            Log.e("TestApp03", filePath + ": Error!!", e);
+            //EditText txtEdit = (EditText) findViewById(R.id.edit_text01_txtEdit);
+            //txtEdit.setText(filePath + ": Error!!" + e.getLocalizedMessage());
+        }
+    }
+
+
+
+
+
 }

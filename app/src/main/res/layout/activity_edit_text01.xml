@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:text="OK"
             android:id="@+id/edit_text01_btnOk"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="ok"/>
 
         <Button
             android:layout_width="wrap_content"
