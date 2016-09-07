@@ -63,10 +63,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 Log.d("TestApp03", "hello, listview-item is clicked.");
-                Log.d("TestApp03", "item pos=" + String.valueOf(position) + ", value=" + arrayAdapter.getItem(position));
-
+                String fileName =  arrayAdapter.getItem(position);
+                Log.d("TestApp03", "item pos=" + String.valueOf(position) + ", value=" + fileName);
                 Intent intent = new Intent(MainActivity.this, EditText01Activity.class);
-                intent.putExtra(Constants.INTENT_KEY_FILENAME, "memo3.txt");
+                intent.putExtra(Constants.INTENT_KEY_FILENAME, fileName);
 
                 startActivity(intent);
             }

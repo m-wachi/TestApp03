@@ -12,9 +12,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 
 public class EditText01Activity extends AppCompatActivity {
 
@@ -29,10 +32,25 @@ public class EditText01Activity extends AppCompatActivity {
 
         Intent intent = getIntent();
         fileName = intent.getStringExtra(Constants.INTENT_KEY_FILENAME);
+
+        Log.d("TestApp03", "onCreate fileName=" + fileName);
+
+        try {
+            String content = loadFile(fileName);
+            EditText editText = (EditText) findViewById(R.id.edit_text01_txtEdit);
+            editText.setText(content);
+
+        } catch (Exception e) {
+            //e.printStackTrace();
+            Log.e("TestApp01", "loadFile Error", e);
+        }
+
+
     }
 
     public void ok(View view) {
         Log.d("TestApp03", "EditText01Activity.Ok start.");
+        Log.d("TestApp03", "fileName=" + fileName);
 
         //Intent intent = new Intent(SecondActivity.this, MainActivity.class);
         //startActivity(intent);
@@ -41,12 +59,20 @@ public class EditText01Activity extends AppCompatActivity {
     }
 
     // copied code
-
+    /*
+     実質はファイル読み込み処理
+     */
     public void cancel(View view) {
         Log.d("TestApp01", "My2ndActivity.cancel start.");
-        String filePath = Environment.getExternalStorageDirectory() + "/memo.txt";
+            //- ただの読み込みはできているので、復号化すること -> not yet
+            //- readLineではなく、もっと丁寧な処理にすることを次にやる -> done.
+
+    }
+
+    private String loadFile(String filename) throws Exception {
+
+        String filePath = Environment.getExternalStorageDirectory() + "/TestApp03/" + filename;
         File file = new File(filePath);
-        try {
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
@@ -64,17 +90,9 @@ public class EditText01Activity extends AppCompatActivity {
 
             String deStr = MyCrypto.decrypt(SEED, strBuff.toString());
 
-            EditText editText = (EditText) findViewById(R.id.edit_text01_txtEdit);
-            editText.setText(deStr);
-            //- ただの読み込みはできているので、復号化すること -> not yet
-            //- readLineではなく、もっと丁寧な処理にすることを次にやる -> done.
-        } catch (Exception e) {
-            //e.printStackTrace();
-            Log.e("TestApp01", "Error", e);
-        }
+            return deStr;
 
     }
-
 
     private void saveFile(String filename){
         String filePath = Environment.getExternalStorageDirectory() + "/TestApp03/" + filename;
