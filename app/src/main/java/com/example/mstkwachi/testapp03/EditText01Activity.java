@@ -52,21 +52,16 @@ public class EditText01Activity extends AppCompatActivity {
         Log.d("TestApp03", "EditText01Activity.Ok start.");
         Log.d("TestApp03", "fileName=" + fileName);
 
-        //Intent intent = new Intent(SecondActivity.this, MainActivity.class);
-        //startActivity(intent);
         saveFile(fileName);
 
+        finish();
     }
 
-    // copied code
-    /*
-     実質はファイル読み込み処理
-     */
     public void cancel(View view) {
-        Log.d("TestApp01", "My2ndActivity.cancel start.");
+        Log.d("TestApp03", "EditText01Activity.cancel start.");
             //- ただの読み込みはできているので、復号化すること -> not yet
             //- readLineではなく、もっと丁寧な処理にすることを次にやる -> done.
-
+        finish();
     }
 
     private String loadFile(String filename) throws Exception {
