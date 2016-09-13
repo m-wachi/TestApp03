@@ -1,7 +1,9 @@
 package com.example.mstkwachi.testapp03;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +21,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
-public class EditText01Activity extends AppCompatActivity {
+public class EditText01Activity extends AppCompatActivity
+        implements ConfirmDialogFragment.ConfirmDialogListener {
+//public class EditText01Activity extends FragmentActivity {
 
     private static final String SEED = "ABCDEF";
 
@@ -52,9 +56,9 @@ public class EditText01Activity extends AppCompatActivity {
         Log.d("TestApp03", "EditText01Activity.Ok start.");
         Log.d("TestApp03", "fileName=" + fileName);
 
-        saveFile(fileName);
+        ConfirmDialogFragment cdf = new ConfirmDialogFragment();
+        cdf.show(getFragmentManager(), "confirm saving");
 
-        finish();
     }
 
     public void cancel(View view) {
@@ -117,7 +121,17 @@ public class EditText01Activity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        Log.d("TestApp03", "EditText01Activity.onDialogPositiveClick start.");
+        saveFile(fileName);
 
+        finish();
+    }
 
-
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Log.d("TestApp03", "EditText01Activity.onDialogNegativeClick start.");
+        finish();
+    }
 }
